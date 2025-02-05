@@ -2,7 +2,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const dropdown = document.getElementById('languageInput');
     const resultsDiv = document.getElementById('results');
-    const resultsText = document.querySelector('.results-text');
     const searchButton = document.getElementById('searchButton');
 
     function fetchGitHubRepositories(language) {
@@ -57,17 +56,38 @@ document.addEventListener('DOMContentLoaded', () => {
                     };
 
                     repoInfo.className = 'repo-info';
-                    repoInfo.innerHTML = `
-                        <i class="fa-solid fa-angle-up"></i>
-                        <h3 class="repo-title">${repo.name}</h3>
-                        <p class="repo-description">${truncateDescription(repo.description)}</p>
-                        <div class="repo-stats">
-                            <span>🔠 ${repo.language || 'Unknown'}</span>
-                            <span>⭐ ${repo.stargazers_count.toLocaleString()}</span>
-                            <span>🔱 ${repo.forks_count.toLocaleString()}</span>
-                            <span>👁 ${repo.watchers_count.toLocaleString()}</span>
-                        </div>
-                    `;
+
+                    const icon = document.createElement('i');
+                    icon.className = 'fa-solid fa-angle-up';
+                    repoInfo.appendChild(icon);
+
+                    const title = document.createElement('h3');
+                    title.className = 'repo-title';
+                    title.textContent = repo.name;
+                    repoInfo.appendChild(title);
+
+                    const description = document.createElement('p');
+                    description.className = 'repo-description';
+                    description.textContent = truncateDescription(repo.description);
+                    repoInfo.appendChild(description);
+
+                    const statsDiv = document.createElement('div');
+                    statsDiv.className = 'repo-stats';
+
+                    const stats = [
+                        { icon: '🔠', value: repo.language || 'Unknown' },
+                        { icon: '⭐', value: repo.stargazers_count.toLocaleString() },
+                        { icon: '🔱', value: repo.forks_count.toLocaleString() },
+                        { icon: '👁', value: repo.watchers_count.toLocaleString() }
+                    ];
+
+                    stats.forEach(stat => {
+                        const span = document.createElement('span');
+                        span.textContent = `${stat.icon} ${stat.value}`;
+                        statsDiv.appendChild(span);
+                    });
+
+                    repoInfo.appendChild(statsDiv);
                     resultsDiv.appendChild(repoInfo);
                     
                     searchButton.style.backgroundColor = 'black';
